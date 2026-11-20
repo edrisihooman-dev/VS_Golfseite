@@ -1,0 +1,62 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #1f2933;
+  background: #f7faf7;
+}
+
+.page {
+  max-width: 700px;
+  margin: 32px auto;
+  padding: 24px;
+}
+
+h1,
+h2 {
+  color: #16733a;
+}
+
+.club-section,
+.tour-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #dfe7df;
+  border-radius: 8px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+select {
+  width: 100%;
+  max-width: 300px;
+  padding: 10px;
+  border: 1px solid #b4c5b6;
+  border-radius: 4px;
+  background: #ffffff;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  background: #16733a;
+  color: #ffffff;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #dfe7df;
+  text-align: left;
+}

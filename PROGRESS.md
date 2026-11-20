@@ -1,7 +1,7 @@
 # Progress
 
 ## Done
-- (nothing yet)
+- f0 done.
 
 ## Next
 - [ ] Step 1: HTML skeleton: form, empty table, empty stats, empty canvas. No JS (F1, F2 – layout only)

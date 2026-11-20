@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golf Distance Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="page">
+    <h1>Golf Distance Tracker</h1>
+
+    <section class="club-section">
+      <h2>Golfclub</h2>
+      <label for="club-select">Club auswahlen</label>
+      <select id="club-select"></select>
+    </section>
+
+    <section class="tour-section">
+      <h2>Tour-Durchschnittswerte</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Golfclub</th>
+            <th>Durchschnitt</th>
+          </tr>
+        </thead>
+        <tbody id="tour-table-body"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
