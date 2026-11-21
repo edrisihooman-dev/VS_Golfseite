@@ -26,7 +26,7 @@ F1. Add a shot with a form: date, club (dropdown), distance in metres.
 F2. Show all saved shots in a table, newest on top.
 F3. creat a button to delet the shot if wanted by the user.
 F4. Save shots in localStorage so they survive a page reload.
-F5. Show my average distance and my best shot.
+F5. Show average distance and best shot with every club if asked by user.
 F6. Club filter: buttons :
 (Driver
 3-Wood 
@@ -37,10 +37,10 @@ F6. Club filter: buttons :
 7-Iron 
 8-Iron 
 9-Iron 
-Pitching Wedge)
+Pitching Wedge)(not needed)
 Clicking one shows only shots with that club in the table, average, best and chart.
-F7. Simple line chart: average distance per practice day, drawn on a canvas.
-F8: button for comparing my lengh with tour pro.
+F7. Simple line chart: average distance , drawn on a canvas.
+F8: button for comparing my lengh with tour pro. (not needed)
 F9: creat these as well, a Date and time square, and weather conditions.
 
 

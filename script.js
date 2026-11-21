@@ -13,12 +13,12 @@ const clubList = [
 
 // Finds the HTML elements used by the form and tables.
 const clubSelect = document.getElementById("club-select");
-const tourTableBody = document.getElementById("tour-table-body");
 const shotForm = document.getElementById("shot-form");
 const shotDate = document.getElementById("shot-date");
 const shotMetres = document.getElementById("shot-metres");
 const formMessage = document.getElementById("form-message");
 const shotsTableBody = document.getElementById("shots-table-body");
+const clubResultsTableBody = document.getElementById("club-results-table-body");
 let storageReady = true;
 const shots = loadSavedShots();
 
@@ -62,21 +62,52 @@ function addClubOptions() {
   }
 }
 
-// Creates one table row for each club and its tour average.
-function addTourTableRows() {
-  for (let index = 0; index < clubList.length; index++) {
-    const club = clubList[index];
+// Draws tour average, my average and best shot for every golf club.
+function drawClubResultsTable() {
+  clubResultsTableBody.textContent = "";
+
+  for (let clubIndex = 0; clubIndex < clubList.length; clubIndex++) {
+    const club = clubList[clubIndex];
+    let totalMetres = 0;
+    let shotCount = 0;
+    let bestMetres = 0;
+
+    for (let shotIndex = 0; shotIndex < shots.length; shotIndex++) {
+      const shot = shots[shotIndex];
+
+      if (shot.club === club.name) {
+        totalMetres = totalMetres + shot.metres;
+        shotCount = shotCount + 1;
+
+        if (shot.metres > bestMetres) {
+          bestMetres = shot.metres;
+        }
+      }
+    }
+
     const row = document.createElement("tr");
-
     const clubCell = document.createElement("td");
-    clubCell.textContent = club.name;
+    const tourAverageCell = document.createElement("td");
+    const myAverageCell = document.createElement("td");
+    const bestCell = document.createElement("td");
 
-    const metresCell = document.createElement("td");
-    metresCell.textContent = club.metres + " m";
+    clubCell.textContent = club.name;
+    tourAverageCell.textContent = club.metres + " m";
+
+    if (shotCount === 0) {
+      myAverageCell.textContent = "-";
+      bestCell.textContent = "-";
+    } else {
+      const averageMetres = Math.round(totalMetres / shotCount);
+      myAverageCell.textContent = averageMetres + " m";
+      bestCell.textContent = bestMetres + " m";
+    }
 
     row.appendChild(clubCell);
-    row.appendChild(metresCell);
-    tourTableBody.appendChild(row);
+    row.appendChild(tourAverageCell);
+    row.appendChild(myAverageCell);
+    row.appendChild(bestCell);
+    clubResultsTableBody.appendChild(row);
   }
 }
 
@@ -151,6 +182,7 @@ function deleteShot(index) {
 
   formMessage.textContent = "";
   drawShotsTable();
+  drawClubResultsTable();
 }
 
 // Changes whether one shot is marked as a favourite.
@@ -203,10 +235,11 @@ function addShot(event) {
   formMessage.textContent = "";
   shotMetres.value = "";
   drawShotsTable();
+  drawClubResultsTable();
 }
 
 addClubOptions();
-addTourTableRows();
 setTodayAsDate();
 drawShotsTable();
+drawClubResultsTable();
 shotForm.addEventListener("submit", addShot);
