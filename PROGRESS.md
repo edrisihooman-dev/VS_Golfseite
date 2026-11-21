@@ -3,7 +3,9 @@
 ## Done
 - f0 done.
 - f1 done
-
+- f2 done
+- 
+- f4 done
 ## Next
 
 ## Decisions & notes

@@ -93,3 +93,22 @@ td {
   border: 1px solid #dfe7df;
   text-align: left;
 }
+
+.delete-button {
+  background: #b42318;
+}
+
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.favourite-button {
+  background: #16733a;
+}
+
+.favourite-button.active {
+  background: #d97706;
+}

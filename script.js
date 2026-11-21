@@ -110,11 +110,62 @@ function drawShotsTable() {
     const metresCell = document.createElement("td");
     metresCell.textContent = shot.metres + " m";
 
+    const actionCell = document.createElement("td");
+    const actionButtons = document.createElement("div");
+    actionButtons.className = "action-buttons";
+
+    const favouriteButton = document.createElement("button");
+    favouriteButton.textContent = shot.favourite ? "Favorit entfernen" : "Favorit";
+    favouriteButton.className = shot.favourite ? "favourite-button active" : "favourite-button";
+    favouriteButton.addEventListener("click", function () {
+      toggleFavourite(index);
+    });
+    actionButtons.appendChild(favouriteButton);
+
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "Löschen";
+    deleteButton.className = "delete-button";
+    deleteButton.addEventListener("click", function () {
+      deleteShot(index);
+    });
+    actionButtons.appendChild(deleteButton);
+    actionCell.appendChild(actionButtons);
+
     row.appendChild(dateCell);
     row.appendChild(clubCell);
     row.appendChild(metresCell);
+    row.appendChild(actionCell);
     shotsTableBody.appendChild(row);
   }
+}
+
+// Removes one shot and updates browser storage and the table.
+function deleteShot(index) {
+  const deletedShot = shots[index];
+  shots.splice(index, 1);
+
+  if (!saveShots()) {
+    shots.splice(index, 0, deletedShot);
+    return;
+  }
+
+  formMessage.textContent = "";
+  drawShotsTable();
+}
+
+// Changes whether one shot is marked as a favourite.
+function toggleFavourite(index) {
+  const shot = shots[index];
+  const previousValue = shot.favourite;
+  shot.favourite = !previousValue;
+
+  if (!saveShots()) {
+    shot.favourite = previousValue;
+    return;
+  }
+
+  formMessage.textContent = "";
+  drawShotsTable();
 }
 
 // Validates the form and saves a valid shot.
@@ -140,7 +191,8 @@ function addShot(event) {
   shots.push({
     date: shotDate.value,
     club: clubSelect.value,
-    metres: metres
+    metres: metres,
+    favourite: false
   });
 
   if (!saveShots()) {
