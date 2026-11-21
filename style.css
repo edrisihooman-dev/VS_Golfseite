@@ -22,7 +22,8 @@ h2 {
 
 .club-section,
 .shots-section,
-.club-results-section {
+.club-results-section,
+.chart-section {
   margin-bottom: 24px;
   padding: 20px;
   background: #ffffff;
@@ -111,4 +112,22 @@ td {
 
 .favourite-button.active {
   background: #d97706;
+}
+
+.chart-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.chart-filter button.active {
+  background: #d97706;
+}
+
+#distance-chart {
+  width: 100%;
+  max-height: 300px;
+  border: 1px solid #dfe7df;
+  background: #ffffff;
 }

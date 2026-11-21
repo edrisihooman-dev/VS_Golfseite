@@ -19,7 +19,10 @@ const shotMetres = document.getElementById("shot-metres");
 const formMessage = document.getElementById("form-message");
 const shotsTableBody = document.getElementById("shots-table-body");
 const clubResultsTableBody = document.getElementById("club-results-table-body");
+const chartFilter = document.getElementById("chart-filter");
+const distanceChart = document.getElementById("distance-chart");
 let storageReady = true;
+let selectedChartClub = "Driver";
 const shots = loadSavedShots();
 
 // Loads saved shots from browser storage.
@@ -183,6 +186,7 @@ function deleteShot(index) {
   formMessage.textContent = "";
   drawShotsTable();
   drawClubResultsTable();
+  drawDistanceChart();
 }
 
 // Changes whether one shot is marked as a favourite.
@@ -198,6 +202,133 @@ function toggleFavourite(index) {
 
   formMessage.textContent = "";
   drawShotsTable();
+}
+
+// Creates the club buttons used to filter the chart.
+function addChartFilterButtons() {
+  for (let index = 0; index < clubList.length; index++) {
+    const button = document.createElement("button");
+    button.textContent = clubList[index].name;
+    button.addEventListener("click", function () {
+      selectedChartClub = clubList[index].name;
+      setActiveChartButton();
+      drawDistanceChart();
+    });
+    chartFilter.appendChild(button);
+  }
+
+  setActiveChartButton();
+}
+
+// Marks the selected club button as active.
+function setActiveChartButton() {
+  const buttons = chartFilter.getElementsByTagName("button");
+
+  for (let index = 0; index < buttons.length; index++) {
+    if (buttons[index].textContent === selectedChartClub) {
+      buttons[index].classList.add("active");
+    } else {
+      buttons[index].classList.remove("active");
+    }
+  }
+}
+
+// Finds the filtered shots and sorts them from oldest to newest.
+function getChartShots() {
+  const chartShots = [];
+
+  for (let index = 0; index < shots.length; index++) {
+    const shot = shots[index];
+    const matchesClub = shot.club === selectedChartClub;
+
+    if (matchesClub) {
+      chartShots.push(shot);
+    }
+  }
+
+  chartShots.sort(function (firstShot, secondShot) {
+    return firstShot.date.localeCompare(secondShot.date);
+  });
+  return chartShots;
+}
+
+// Draws a simple line chart of shot distances.
+function drawDistanceChart() {
+  const canvasContext = distanceChart.getContext("2d");
+  const chartShots = getChartShots();
+  canvasContext.clearRect(0, 0, distanceChart.width, distanceChart.height);
+
+  const leftSpace = 50;
+  const rightSpace = 20;
+  const topSpace = 20;
+  const bottomSpace = 40;
+  const chartWidth = distanceChart.width - leftSpace - rightSpace;
+  const chartHeight = distanceChart.height - topSpace - bottomSpace;
+
+  if (chartShots.length === 0) {
+    canvasContext.fillText("Keine Schläge für diesen Filter.", leftSpace, topSpace + 20);
+    return;
+  }
+
+  let minimumDistance = chartShots[0].metres;
+  let maximumDistance = chartShots[0].metres;
+
+  for (let index = 0; index < chartShots.length; index++) {
+    const metres = chartShots[index].metres;
+    minimumDistance = Math.min(minimumDistance, metres);
+    maximumDistance = Math.max(maximumDistance, metres);
+  }
+
+  if (minimumDistance === maximumDistance) {
+    minimumDistance = minimumDistance - 10;
+    maximumDistance = maximumDistance + 10;
+  }
+
+  canvasContext.beginPath();
+  canvasContext.strokeStyle = "#16733a";
+  canvasContext.lineWidth = 3;
+
+  for (let index = 0; index < chartShots.length; index++) {
+    const metres = chartShots[index].metres;
+    const x = leftSpace +
+      (index / Math.max(chartShots.length - 1, 1)) * chartWidth;
+    const y = topSpace + chartHeight -
+      ((metres - minimumDistance) /
+      (maximumDistance - minimumDistance)) * chartHeight;
+
+    if (index === 0) {
+      canvasContext.moveTo(x, y);
+    } else {
+      canvasContext.lineTo(x, y);
+    }
+  }
+
+  canvasContext.stroke();
+  drawChartPoints(canvasContext, chartShots, leftSpace, topSpace,
+    chartWidth, chartHeight, minimumDistance, maximumDistance);
+}
+
+// Draws each chart point and its date label.
+function drawChartPoints(canvasContext, chartShots, leftSpace, topSpace,
+  chartWidth, chartHeight, minimumDistance, maximumDistance) {
+  canvasContext.fillStyle = "#16733a";
+  canvasContext.textAlign = "center";
+
+  for (let index = 0; index < chartShots.length; index++) {
+    const metres = chartShots[index].metres;
+    const x = leftSpace +
+      (index / Math.max(chartShots.length - 1, 1)) * chartWidth;
+    const y = topSpace + chartHeight -
+      ((metres - minimumDistance) /
+      (maximumDistance - minimumDistance)) * chartHeight;
+
+    canvasContext.fillStyle = "#16733a";
+    canvasContext.beginPath();
+    canvasContext.arc(x, y, 5, 0, 2 * Math.PI);
+    canvasContext.fill();
+    canvasContext.fillStyle = "#1f2933";
+    canvasContext.fillText(metres + " m", x, y - 10);
+  }
 }
 
 // Validates the form and saves a valid shot.
@@ -236,10 +367,13 @@ function addShot(event) {
   shotMetres.value = "";
   drawShotsTable();
   drawClubResultsTable();
+  drawDistanceChart();
 }
 
 addClubOptions();
 setTodayAsDate();
 drawShotsTable();
 drawClubResultsTable();
+addChartFilterButtons();
+drawDistanceChart();
 shotForm.addEventListener("submit", addShot);
