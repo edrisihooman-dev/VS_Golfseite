@@ -11,9 +11,15 @@ const clubList = [
   { name: "Pitching Wedge", metres: 130 }
 ];
 
-// Finds the HTML elements used for club selection and tour values.
+// Finds the HTML elements used by the form and tables.
 const clubSelect = document.getElementById("club-select");
 const tourTableBody = document.getElementById("tour-table-body");
+const shotForm = document.getElementById("shot-form");
+const shotDate = document.getElementById("shot-date");
+const shotMetres = document.getElementById("shot-metres");
+const formMessage = document.getElementById("form-message");
+const shotsTableBody = document.getElementById("shots-table-body");
+const shots = [];
 
 // Creates the club options in the dropdown.
 function addClubOptions() {
@@ -44,5 +50,71 @@ function addTourTableRows() {
   }
 }
 
+// Sets the date field to the current day.
+function setTodayAsDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  shotDate.value = year + "-" + month + "-" + day;
+}
+
+// Draws all shots with the newest date at the top.
+function drawShotsTable() {
+  shotsTableBody.textContent = "";
+
+  shots.sort(function (firstShot, secondShot) {
+    return secondShot.date.localeCompare(firstShot.date);
+  });
+
+  for (let index = 0; index < shots.length; index++) {
+    const shot = shots[index];
+    const row = document.createElement("tr");
+
+    const dateCell = document.createElement("td");
+    dateCell.textContent = shot.date;
+
+    const clubCell = document.createElement("td");
+    clubCell.textContent = shot.club;
+
+    const metresCell = document.createElement("td");
+    metresCell.textContent = shot.metres + " m";
+
+    row.appendChild(dateCell);
+    row.appendChild(clubCell);
+    row.appendChild(metresCell);
+    shotsTableBody.appendChild(row);
+  }
+}
+
+// Validates the form and adds a valid shot to the in-memory list.
+function addShot(event) {
+  event.preventDefault();
+
+  const metres = Number(shotMetres.value);
+
+  if (shotMetres.value === "") {
+    formMessage.textContent = "Bitte eine Entfernung eingeben.";
+    return;
+  }
+
+  if (metres < 1 || metres > 350) {
+    formMessage.textContent = "Die Entfernung muss zwischen 1 und 350 Metern liegen.";
+    return;
+  }
+
+  shots.push({
+    date: shotDate.value,
+    club: clubSelect.value,
+    metres: metres
+  });
+
+  formMessage.textContent = "";
+  shotMetres.value = "";
+  drawShotsTable();
+}
+
 addClubOptions();
 addTourTableRows();
+setTodayAsDate();
+shotForm.addEventListener("submit", addShot);

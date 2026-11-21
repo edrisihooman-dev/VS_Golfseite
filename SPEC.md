@@ -14,8 +14,6 @@ F0. Add Golfclubs with their average yardage for tour player. these are the stat
 (Driver 258 m
 3-Wood 228 m
 5-Wood 216 m
-Hybrid 211 m
-3-Iron 199 m
 4-Iron 191 m
 5-Iron 182 m
 6-Iron 172 m
@@ -33,7 +31,6 @@ F6. Club filter: buttons :
 (Driver
 3-Wood 
 5-Wood  
-3-Iron 
 4-Iron 
 5-Iron 
 6-Iron 

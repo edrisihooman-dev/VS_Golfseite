@@ -10,11 +10,38 @@
   <main class="page">
     <h1>Golf Distance Tracker</h1>
 
-    <section class="club-section">
-      <h2>Golfclub</h2>
-      <label for="club-select">Club auswahlen</label>
-      <select id="club-select"></select>
-    </section>
+    <div class="layout">
+      <section class="club-section">
+        <h2>Schlag hinzufügen</h2>
+        <form id="shot-form">
+          <label for="shot-date">Datum</label>
+          <input id="shot-date" type="date">
+
+          <label for="club-select">Golfclub</label>
+          <select id="club-select"></select>
+
+          <label for="shot-metres">Entfernung in Metern</label>
+          <input id="shot-metres" type="number" min="1" max="350" placeholder="Zum Beispiel 185">
+
+          <p id="form-message" role="alert"></p>
+          <button type="submit">Add</button>
+        </form>
+      </section>
+
+      <section class="shots-section">
+        <h2>Gespeicherte Schläge</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Datum</th>
+              <th>Golfclub</th>
+              <th>Meter</th>
+            </tr>
+          </thead>
+          <tbody id="shots-table-body"></tbody>
+        </table>
+      </section>
+    </div>
 
     <section class="tour-section">
       <h2>Tour-Durchschnittswerte</h2>
