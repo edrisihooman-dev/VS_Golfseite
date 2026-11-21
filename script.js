@@ -19,7 +19,37 @@ const shotDate = document.getElementById("shot-date");
 const shotMetres = document.getElementById("shot-metres");
 const formMessage = document.getElementById("form-message");
 const shotsTableBody = document.getElementById("shots-table-body");
-const shots = [];
+let storageReady = true;
+const shots = loadSavedShots();
+
+// Loads saved shots from browser storage.
+function loadSavedShots() {
+  try {
+    const savedShots = localStorage.getItem("golfShots");
+    const loadedShots = savedShots ? JSON.parse(savedShots) : [];
+
+    if (!Array.isArray(loadedShots)) {
+      throw new Error("Die gespeicherten Daten haben ein ungültiges Format.");
+    }
+
+    return loadedShots;
+  } catch (error) {
+    storageReady = false;
+    formMessage.textContent = "Schläge konnten nicht geladen werden: " + error.message;
+    return [];
+  }
+}
+
+// Saves all shots in browser storage.
+function saveShots() {
+  try {
+    localStorage.setItem("golfShots", JSON.stringify(shots));
+    return true;
+  } catch (error) {
+    formMessage.textContent = "Schläge konnten nicht gespeichert werden: " + error.message;
+    return false;
+  }
+}
 
 // Creates the club options in the dropdown.
 function addClubOptions() {
@@ -87,9 +117,13 @@ function drawShotsTable() {
   }
 }
 
-// Validates the form and adds a valid shot to the in-memory list.
+// Validates the form and saves a valid shot.
 function addShot(event) {
   event.preventDefault();
+
+  if (!storageReady) {
+    return;
+  }
 
   const metres = Number(shotMetres.value);
 
@@ -109,6 +143,11 @@ function addShot(event) {
     metres: metres
   });
 
+  if (!saveShots()) {
+    shots.pop();
+    return;
+  }
+
   formMessage.textContent = "";
   shotMetres.value = "";
   drawShotsTable();
@@ -117,4 +156,5 @@ function addShot(event) {
 addClubOptions();
 addTourTableRows();
 setTodayAsDate();
+drawShotsTable();
 shotForm.addEventListener("submit", addShot);
